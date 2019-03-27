@@ -1,0 +1,5 @@
+"Rule: ocaml: ml & cmi -> cmx & o (%=main )": "u[\224\015Np\143\240\001-\021\188&\241\193z"
+"Rule: ocaml: ml -> cmo & cmi (%=main )": "zO\195@y4\\\003E\219\241%[\172\014I"
+"Rule: ocaml dependencies ml (%=main )": ":d\252\213\144\132y\238`1\1402lB\017\145"
+"Resource: /home/jon/Documents/classes/ocaml/oCaml_stock_tracker/main.ml": "\b\017\177z{p\206\253\208\159.\255&\181n\191"
+"Rule: ocaml: cmx* & o* -> native (%=main )": "\159F\242\006qu\021\233\251\215\241\200\152\\=p"
