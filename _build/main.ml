@@ -1,22 +1,43 @@
-(* client_example.ml *)
 open Lwt
 open Cohttp
 open Cohttp_lwt_unix
+open Opium.Std
 
-let makestring =
-	let () = print_endline "Enter stock ticker " in
-	let ticker = read_line() in
-	"https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=" ^ ticker ^ "&interval=5min&apikey=GS4ESAYXG0G6D66Q"
+type person = {
+  name: string;
+  age: int;
+}
 
 let body =
-  Client.get (Uri.of_string makestring) >>= fun (resp, body) ->
-  let code = resp |> Response.status |> Code.code_of_status in
+  Client.get (Uri.of_string "https://www.reddit.com/") >>= fun (resp, body) ->
+  let code = resp |> Cohttp.Response.status |> Code.code_of_status in
   Printf.printf "Response code: %d\n" code;
-  Printf.printf "Headers: %s\n" (resp |> Response.headers |> Header.to_string);
+  Printf.printf "Headers: %s\n" (resp |> Cohttp.Response.headers |> Header.to_string);
   body |> Cohttp_lwt.Body.to_string >|= fun body ->
   Printf.printf "Body of length: %d\n" (String.length body);
   body
 
-let () =
+let json_of_person {id}=
+  let open Ezjsonm in
+    dict["id", (string id)]
+
+let print_param = put "/hello/:name" begin fun req ->
+  `String ("Hello " ^ param req "name") |> respond'
+end
+
+let print_person = get "/person/:name/:age" begin fun req ->
+(*  let person = {
+    name = param req "name";
+    age = "age" |> param req |> int_of_string;
+  } in
+  `Json (person |> json_of_person) |> respond'
+*)
   let body = Lwt_main.run body in
-  print_endline ("Received body\n" ^ body)
+  `Json body |> respond'
+end
+
+let _ =
+  App.empty
+  |> print_param
+  |> print_person
+  |> App.run_command
